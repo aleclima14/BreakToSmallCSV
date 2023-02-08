@@ -14,7 +14,7 @@ from PyQt6.QtSerialPort import (QSerialPort, QSerialPortInfo)
 from PyQt6 import QtCore
 from PyQt6.QtGui import QIcon
 
-from pathlib import Path
+# from pathlib import Path
 
 import os
 # from tkinter import Tk
@@ -70,7 +70,7 @@ class Windows(QWidget):
       self.setWindowTitle("Break To Small CSV")
       self.setContentsMargins(20, 20, 20, 20)
       # self.resize(400, 170)
-      self.setFixedSize(450, 200)
+      self.setFixedSize(600, 200)
       
 
       layout = QVBoxLayout()
@@ -117,7 +117,7 @@ class Windows(QWidget):
       self.openFile = QPushButton("...")
       self.openFile.setMaximumWidth(40)
       self.openFile.setMinimumWidth(40)
-      self.openFile.clicked.connect(self.showDialog)
+      self.openFile.clicked.connect(self.getFileName)
 
       # Export file box  
       self.pathExportBox = QLineEdit()
@@ -127,6 +127,7 @@ class Windows(QWidget):
       self.pathExportFile = QPushButton("...")
       self.pathExportFile.setMaximumWidth(40)
       self.pathExportFile.setMinimumWidth(40)
+      self.pathExportFile.clicked.connect(self.getDirectory)
 
       # Number of lines in files
       self.numberOfLines = QLineEdit()
@@ -147,20 +148,17 @@ class Windows(QWidget):
       line5.addWidget(self.numberOfLines)
       line5.addWidget(self.exportButton)
 
-   def showDialog(self):
+   def getFileName(self):
+      fileTypesFilter = "Arquivos de texto (*.csv *.txt)"
+      response = QFileDialog.getOpenFileName(parent = self, caption = "Select a file", directory = os.getcwd(), filter = fileTypesFilter)
+      self.inputFileBox.setText(str(response))
 
-      home_dir = str(Path.home())
-      fname = QFileDialog.getOpenFileName(self, 'Open file', home_dir)
-
-      if fname[0]:
-
-         f = open(fname[0], 'r')
-
-         with f:
-
-            # data = f.read()
-            data = os.path.basename(f)
-            self.inputFileBox.setText(data)
+   def getDirectory(self):
+      response = QFileDialog.getExistingDirectory(
+            self,
+            # caption='Select a folder'
+      )
+      self.pathExportBox.setText(str(response))
    
 def window():
    applicationWindow = QApplication(sys.argv)
